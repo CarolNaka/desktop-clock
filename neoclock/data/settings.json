@@ -4,5 +4,7 @@
     "fonte": "Courier New",
     "tamanho_fonte": 51,
     "mostrar_segundos": true,
-    "formato": "12h"
+    "formato": "12h",
+    "quote_date": "",
+    "quote_text": ""
 }

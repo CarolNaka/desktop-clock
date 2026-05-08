@@ -12,6 +12,8 @@ DEFAULTS = {
     "tamanho_fonte": 72,
     "mostrar_segundos": True,
     "formato": "24h",
+    "quote_date": "",
+    "quote_text": "" 
 }
 
 class SettingsManager:

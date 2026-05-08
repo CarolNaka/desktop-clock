@@ -5,7 +5,7 @@ from ui.main_window import MainWindow
 
 def main():
     app = QApplication(sys.argv)
-    app.setApplicationName("NéoClock")
+    app.setApplicationName("MyClock")
 
     sm = SettingsManager()
     window = MainWindow(sm)
