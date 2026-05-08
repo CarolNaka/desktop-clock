@@ -1,46 +1,60 @@
 from PySide6.QtWidgets import QMainWindow, QWidget, QHBoxLayout
 from PySide6.QtCore import Qt
+
 from ui.clock_widget import ClockWidget
 from ui.settings_panel import SettingsPanel
 from core.clock_engine import ClockEngine
-from core.quote_engine import QuoteEngine          # novo
+from core.quote_engine import QuoteEngine
+
 
 class MainWindow(QMainWindow):
     def __init__(self, settings_manager):
         super().__init__()
+
         self.sm = settings_manager
-        self.setWindowTitle("NéoClock")
+
+        self.setWindowTitle("MyClock")
         self.resize(700, 200)
         self.setMinimumSize(400, 120)
 
         central = QWidget()
         self.setCentralWidget(central)
+
         layout = QHBoxLayout(central)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        self.painel = SettingsPanel(self.sm)
-        self.relogio = ClockWidget(self.sm)
+        self.panel = SettingsPanel(self.sm)
+        self.clock = ClockWidget(self.sm)
 
-        layout.addWidget(self.painel)
-        layout.addWidget(self.relogio, stretch=1)
+        layout.addWidget(self.panel)
+        layout.addWidget(self.clock, stretch=1)
 
         self.engine = ClockEngine(self.sm)
-        self.engine.tick.connect(self.relogio.atualizar)
-        self.painel.config_alterada.connect(self.relogio.aplicar_estilo)
 
-        self.engine.iniciar()
-        self._aplicar_fundo()
-        self._carregar_frase()                     # novo
+        self.engine.tick.connect(self.clock.update_clock)
+        
+        self.panel.config_changed.connect(self.clock.apply_style)
+        self.panel.config_changed.connect(self._apply_background)
 
-    def _aplicar_fundo(self):
-        self.setStyleSheet(f"background-color: {self.sm.get('cor_fundo')};")
+        self.engine.start()
 
-    def _carregar_frase(self):                     # novo
+        self._apply_background()
+        self._load_quote()
+
+    def _apply_background(self):
+        self.setStyleSheet(
+            f"background-color: {self.sm.get('background_color')};"
+        )
+
+    def _load_quote(self):
         try:
             qe = QuoteEngine(self.sm)
-            frase = qe.obter_frase()
-            self.relogio.definir_frase(frase)
+            quote = qe.get_quote()
+
+            self.clock.set_quote(quote)
+
         except Exception as e:
-            print("[MainWindow] Erro ao carregar frase:", e)
-            self.relogio.definir_frase("Erro ao carregar frase.")
+            print("[MainWindow] Error loading quote:", e)
+
+            self.clock.set_quote("Error loading quote.")

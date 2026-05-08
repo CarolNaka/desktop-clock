@@ -1,10 +1,10 @@
 {
-    "cor_fundo": "#400067",
-    "cor_texto": "#4375ff",
-    "fonte": "Courier New",
-    "tamanho_fonte": 51,
-    "mostrar_segundos": true,
-    "formato": "12h",
-    "quote_date": "",
-    "quote_text": ""
+    "background_color": "#040031",
+    "text_color": "#ecdcff",
+    "font": "Consolas",
+    "font_size": 40,
+    "show_seconds": true,
+    "format": "24h",
+    "quote_date": "2026-05-08",
+    "quote_text": "Silence also answers."
 }

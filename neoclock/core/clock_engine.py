@@ -1,11 +1,12 @@
 from PySide6.QtCore import QObject, Signal, QTimer, Qt
 from datetime import datetime
 
-DIAS_SEMANA = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
-MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+MONTHS = ["January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"]
 
 class ClockEngine(QObject):
-    tick = Signal(str, str)  # (hora_formatada, data_formatada)
+    tick = Signal(str, str)  # (formatted_time, formatted_date)
 
     def __init__(self, settings_manager):
         super().__init__()
@@ -14,26 +15,28 @@ class ClockEngine(QObject):
         self._timer = QTimer(self)
         self._timer.setTimerType(Qt.PreciseTimer)
         self._timer.setInterval(1000)
-        self._timer.timeout.connect(self._emitir)
+        self._timer.timeout.connect(self._emit)
 
-    def iniciar(self):
-        self._emitir()
+    def start(self):
+        self._emit()
         self._timer.start()
 
-    def _emitir(self):
-        agora = datetime.now()
-        hora = agora.strftime(self._formato_hora())
-        data = self._formatar_data(agora)
-        self.tick.emit(hora, data)
+    def _emit(self):
+        now = datetime.now()
+        time = now.strftime(self._time_format())
+        date = self._format_date(now)
+        self.tick.emit(time, date)
 
-    def _formato_hora(self) -> str:
-        is_12h = self.sm.get("formato") == "12h"
-        com_seg = self.sm.get("mostrar_segundos")
+    def _time_format(self) -> str:
+        is_12h = self.sm.get("format") == "12h"
+        show_seconds = self.sm.get("show_seconds")
+
         if is_12h:
-            return "%I:%M:%S %p" if com_seg else "%I:%M %p"
-        return "%H:%M:%S" if com_seg else "%H:%M"
+            return "%I:%M:%S %p" if show_seconds else "%I:%M %p"
 
-    def _formatar_data(self, agora: datetime) -> str:
-        dia_semana = DIAS_SEMANA[agora.weekday()]
-        mes = MESES[agora.month - 1]
-        return f"{dia_semana}, {agora.day} de {mes}"
+        return "%H:%M:%S" if show_seconds else "%H:%M"
+
+    def _format_date(self, now: datetime) -> str:
+        weekday = WEEKDAYS[now.weekday()]
+        month = MONTHS[now.month - 1]
+        return f"{weekday}, {now.day} of {month}"

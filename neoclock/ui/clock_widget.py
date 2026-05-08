@@ -11,64 +11,65 @@ class ClockWidget(QWidget):
         layout.setSpacing(4)
         layout.setContentsMargins(20, 20, 20, 20)
 
-        self.label_hora = QLabel()
-        self.label_hora.setAlignment(Qt.AlignCenter)
+        self.label_time = QLabel()
+        self.label_time.setAlignment(Qt.AlignCenter)
 
-        self.label_data = QLabel()
-        self.label_data.setAlignment(Qt.AlignCenter)
+        self.label_date = QLabel()
+        self.label_date.setAlignment(Qt.AlignCenter)
 
-        self.label_frase = QLabel()
-        self.label_frase.setAlignment(Qt.AlignCenter)
-        self.label_frase.setWordWrap(True)
+        self.label_quote = QLabel()
+        self.label_quote.setAlignment(Qt.AlignCenter)
+        self.label_quote.setWordWrap(True)
 
-        layout.addWidget(self.label_hora)
-        layout.addWidget(self.label_data)
-        layout.addWidget(self.label_frase)
+        layout.addWidget(self.label_time)
+        layout.addWidget(self.label_date)
+        layout.addWidget(self.label_quote)
 
-        self.aplicar_estilo()
+        self.apply_style()
 
-    def aplicar_estilo(self):
-        cor_texto = self.sm.get("cor_texto")
-        cor_fundo = self.sm.get("cor_fundo")
-        fonte = self.sm.get("fonte")
-        tamanho = self.sm.get("tamanho_fonte")
-        tamanho_data = max(12, tamanho // 4)
-        tamanho_frase = max(11, tamanho // 5)
+    def apply_style(self):
+        text_color = self.sm.get("text_color")
+        background_color = self.sm.get("background_color")
+        font = self.sm.get("font")
+        size = self.sm.get("font_size")
 
-        self.setStyleSheet(f"background-color: {cor_fundo};")
+        date_size = max(12, size // 4)
+        quote_size = max(11, size // 5)
 
-        self.label_hora.setStyleSheet(f"""
+        self.setStyleSheet(f"background-color: {background_color};")
+
+        self.label_time.setStyleSheet(f"""
             QLabel {{
-                font-family: {fonte};
-                font-size: {tamanho}px;
+                font-family: {font};
+                font-size: {size}px;
                 font-weight: bold;
-                color: {cor_texto};
+                color: {text_color};
                 background-color: transparent;
             }}
         """)
 
-        self.label_data.setStyleSheet(f"""
+        self.label_date.setStyleSheet(f"""
             QLabel {{
-                font-family: {fonte};
-                font-size: {tamanho_data}px;
-                color: {cor_texto};
+                font-family: {font};
+                font-size: {date_size}px;
+                color: {text_color};
                 background-color: transparent;
             }}
         """)
 
-        self.label_frase.setStyleSheet(f"""
+        self.label_quote.setStyleSheet(f"""
             QLabel {{
-                font-family: {fonte};
-                font-size: {tamanho_frase}px;
-                color: {cor_texto};
+                font-family: {font};
+                font-size: {quote_size}px;
+                color: {text_color};
                 background-color: transparent;
                 padding-top: 8px;
             }}
         """)
 
-    def atualizar(self, hora: str, data: str):
-        self.label_hora.setText(hora)
-        self.label_data.setText(data)
+    def update_clock(self, time: str, date: str):
+        self.label_time.setText(time)
+        self.label_date.setText(date)
 
-    def definir_frase(self, frase: str):
-        self.label_frase.setText(frase)
+    def set_quote(self, quote: str):
+        self.label_quote.setText(quote)
