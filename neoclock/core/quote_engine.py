@@ -2,7 +2,7 @@ import os
 import random
 from datetime import date
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
 
 load_dotenv()
 
@@ -12,14 +12,14 @@ class QuoteEngine:
     def __init__(self, settings_manager):
         self.sm = settings_manager
 
-        api_key = os.getenv("GEMINI_API_KEY")
+        api_key = os.getenv("GROQ_API_KEY")
 
         print(
             f"[QuoteEngine] API key loaded: "
             f"{'OK' if api_key else 'NOT FOUND'}"
         )
 
-        self.client = genai.Client(api_key=api_key)
+        self.client = Groq(api_key=api_key)
 
     def get_quote(self) -> str:
         today = str(date.today())
@@ -54,18 +54,16 @@ class QuoteEngine:
         )
 
         try:
-            response = self.client.models.generate_content(
-                model="gemini-1.5-flash",
-                contents=prompt
+            response = self.client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=100,
             )
 
-            print("[QuoteEngine] Full response:", response)
-
-            if hasattr(response, "text") and response.text:
-                return response.text.strip()
-
-            return "No quote available."
+            quote = response.choices[0].message.content.strip()
+            print("[QuoteEngine] Full response:", quote)
+            return quote
 
         except Exception as e:
-            print("[QuoteEngine] Gemini error:", e)
+            print("[QuoteEngine] Groq error:", e)
             return "Silence also answers."
