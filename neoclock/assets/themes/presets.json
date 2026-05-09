@@ -1,0 +1,42 @@
+{
+    "dark": [
+        {
+            "id": "void",
+            "label": "Void",
+            "background_color": "#0f0f1a",
+            "text_color": "#e0d9f5"
+        },
+        {
+            "id": "nebula",
+            "label": "Nebula",
+            "background_color": "#1a0a2e",
+            "text_color": "#d4b8ff"
+        },
+        {
+            "id": "forest",
+            "label": "Forest",
+            "background_color": "#0a1a0f",
+            "text_color": "#a8d5b5"
+        }
+    ],
+    "light": [
+        {
+            "id": "paper",
+            "label": "Paper",
+            "background_color": "#f2eeea",
+            "text_color": "#2a2520"
+        },
+        {
+            "id": "sky",
+            "label": "Sky",
+            "background_color": "#e8f0fe",
+            "text_color": "#1a2a4a"
+        },
+        {
+            "id": "sand",
+            "label": "Sand",
+            "background_color": "#fef3e8",
+            "text_color": "#3a2a10"
+        }
+    ]
+}

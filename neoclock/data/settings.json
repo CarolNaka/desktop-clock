@@ -1,10 +1,11 @@
 {
-    "background_color": "#040031",
-    "text_color": "#ecdcff",
+    "background_color": "#e8f0fe",
+    "text_color": "#1a2a4a",
     "font": "Consolas",
-    "font_size": 40,
+    "font_size": 120,
     "show_seconds": true,
     "format": "24h",
     "quote_date": "2026-05-09",
-    "quote_text": "In the depths of our own silences we find the whispers of a universe that is still becoming itself."
+    "quote_text": "In the depths of our own silences we find the whispers of a universe that is still becoming itself.",
+    "active_preset": "sky"
 }
