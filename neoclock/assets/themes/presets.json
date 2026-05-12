@@ -3,88 +3,40 @@
         {
             "id": "void",
             "label": "Void",
-            "background_color": "#0f0f1a",
-            "text_color": "#e0d9f5"
-        },
-        {
-            "id": "nebula",
-            "label": "Nebula",
-            "background_color": "#1a0a2e",
-            "text_color": "#d4b8ff"
-        },
-        {
-            "id": "forest",
-            "label": "Forest",
-            "background_color": "#0a1a0f",
-            "text_color": "#a8d5b5"
+            "background_color": "#0c0e14",
+            "text_color": "#ece8f4"
         },
         {
             "id": "midnight",
             "label": "Midnight",
-            "background_color": "#0a1628",
-            "text_color": "#8ec5ff"
-        },
-        {
-            "id": "ember",
-            "label": "Ember",
-            "background_color": "#1a0f0a",
-            "text_color": "#ffb38a"
+            "background_color": "#071018",
+            "text_color": "#b8dafb"
         },
         {
             "id": "slate",
             "label": "Slate",
-            "background_color": "#121820",
-            "text_color": "#c8d4e0"
-        },
-        {
-            "id": "aurora",
-            "label": "Aurora",
-            "background_color": "#0d1f1c",
-            "text_color": "#7fffd4"
+            "background_color": "#131920",
+            "text_color": "#d8e0ea"
         }
     ],
     "light": [
         {
             "id": "paper",
             "label": "Paper",
-            "background_color": "#f2eeea",
-            "text_color": "#2a2520"
-        },
-        {
-            "id": "sky",
-            "label": "Sky",
-            "background_color": "#e8f0fe",
-            "text_color": "#1a2a4a"
+            "background_color": "#f4f0eb",
+            "text_color": "#221e19"
         },
         {
             "id": "sand",
             "label": "Sand",
-            "background_color": "#fef3e8",
-            "text_color": "#3a2a10"
+            "background_color": "#fff4e6",
+            "text_color": "#3b2e16"
         },
         {
-            "id": "mint",
-            "label": "Mint",
-            "background_color": "#e8f5ef",
-            "text_color": "#1a3d2e"
-        },
-        {
-            "id": "lavender",
-            "label": "Lavender",
-            "background_color": "#f0ebf8",
-            "text_color": "#3d2a5c"
-        },
-        {
-            "id": "cream",
-            "label": "Cream",
-            "background_color": "#faf6f0",
-            "text_color": "#3a3530"
-        },
-        {
-            "id": "rose",
-            "label": "Rose",
-            "background_color": "#fceef2",
-            "text_color": "#4a1a2e"
+            "id": "mist",
+            "label": "Mist",
+            "background_color": "#e9edf4",
+            "text_color": "#243240"
         }
     ]
 }

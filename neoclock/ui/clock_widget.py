@@ -1,15 +1,20 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QSizePolicy
 from PySide6.QtCore import Qt
+
 
 class ClockWidget(QWidget):
     def __init__(self, settings_manager):
         super().__init__()
         self.sm = settings_manager
+        self.setObjectName("clockRoot")
+        # Garante que o fundo do stylesheet é realmente pintado (evita “buracos” cinzentos).
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         layout = QVBoxLayout(self)
         layout.setAlignment(Qt.AlignCenter)
-        layout.setSpacing(4)
-        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(8)
+        layout.setContentsMargins(24, 24, 24, 24)
 
         self.label_time = QLabel()
         self.label_time.setAlignment(Qt.AlignCenter)
@@ -36,7 +41,7 @@ class ClockWidget(QWidget):
         date_size = max(12, size // 4)
         quote_size = max(11, size // 5)
 
-        self.setStyleSheet(f"background-color: {background_color};")
+        self.setStyleSheet(f"#clockRoot {{ background-color: {background_color}; }}")
 
         self.label_time.setStyleSheet(f"""
             QLabel {{
@@ -63,7 +68,8 @@ class ClockWidget(QWidget):
                 font-size: {quote_size}px;
                 color: {text_color};
                 background-color: transparent;
-                padding-top: 8px;
+                padding-top: 10px;
+                opacity: 0.92;
             }}
         """)
 

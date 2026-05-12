@@ -7,8 +7,8 @@ SETTINGS_FILE = DATA_DIR / "settings.json"
 THEMES_FILE = Path(__file__).parent.parent / "assets" / "themes" / "presets.json"
 
 DEFAULTS = {
-    "background_color": "#0f0f1a",
-    "text_color": "#e0d9f5",
+    "background_color": "#0c0e14",
+    "text_color": "#ece8f4",
     "font": "Consolas",
     "font_size": 72,
     "show_seconds": True,
@@ -18,11 +18,21 @@ DEFAULTS = {
     "active_preset": "void",
 }
 
+def _preset_ids(presets: dict) -> set:
+    ids = set()
+    for group in ("dark", "light"):
+        for p in presets.get(group, []):
+            ids.add(p["id"])
+    return ids
+
+
 class SettingsManager:
     def __init__(self):
         DATA_DIR.mkdir(exist_ok=True)
         self._data = self._load()
         self._presets = self._load_presets()
+        self._ensure_valid_preset()
+        self._sync_active_preset_from_file()
 
     def _load(self) -> dict:
         if SETTINGS_FILE.exists():
@@ -42,6 +52,34 @@ class SettingsManager:
             except (json.JSONDecodeError, OSError):
                 pass
         return {"dark": [], "light": []}
+
+    def _ensure_valid_preset(self):
+        valid = _preset_ids(self._presets)
+        if not valid:
+            return
+        current = self._data.get("active_preset")
+        if current in valid and current != "custom":
+            return
+        first = (self._presets.get("dark") or self._presets.get("light") or [None])[0]
+        if not first:
+            return
+        self.apply_preset(first["id"])
+
+    def _sync_active_preset_from_file(self):
+        """Garante que fundo e texto coincidem com presets.json (corrige settings antigos)."""
+        pid = self._data.get("active_preset")
+        for preset in self.all_presets():
+            if preset["id"] == pid:
+                bg = preset["background_color"]
+                fg = preset["text_color"]
+                if (
+                    self._data.get("background_color") != bg
+                    or self._data.get("text_color") != fg
+                ):
+                    self._data["background_color"] = bg
+                    self._data["text_color"] = fg
+                    self.save()
+                return
 
     def save(self):
         with open(SETTINGS_FILE, "w", encoding="utf-8") as f:

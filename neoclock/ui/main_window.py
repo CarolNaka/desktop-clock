@@ -1,12 +1,10 @@
-from PySide6.QtWidgets import QMainWindow, QWidget, QHBoxLayout
-from PySide6.QtCore import Qt, QRect
+from PySide6.QtWidgets import QMainWindow, QWidget, QHBoxLayout, QSizePolicy
+from PySide6.QtCore import Qt
 
 from ui.clock_widget import ClockWidget
-from ui.settings_panel import SettingsPanel
+from ui.settings_panel import SettingsPanel, PANEL_WIDTH
 from core.clock_engine import ClockEngine
 from core.quote_engine import QuoteEngine
-
-PANEL_WIDTH = 200
 
 
 class MainWindow(QMainWindow):
@@ -18,15 +16,16 @@ class MainWindow(QMainWindow):
         self.resize(700, 220)
         self.setMinimumSize(400, 160)
 
-        # Container central
+        # Container central — fundo alinhado ao tema (o relógio expande e cobre tudo)
         self.central = QWidget()
+        self.central.setObjectName("centralArea")
+        self.central.setAttribute(Qt.WA_StyledBackground, True)
         self.setCentralWidget(self.central)
 
-        # Relógio ocupa tudo
         self.clock = ClockWidget(self.sm)
         layout = QHBoxLayout(self.central)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.clock)
+        layout.addWidget(self.clock, 1)
 
         # Painel flutua sobre o central como filho direto
         self.panel = SettingsPanel(self.sm, parent=self.central)
@@ -37,10 +36,10 @@ class MainWindow(QMainWindow):
         self.engine = ClockEngine(self.sm)
         self.engine.tick.connect(self.clock.update_clock)
         self.panel.config_changed.connect(self.clock.apply_style)
-        self.panel.config_changed.connect(self._apply_background)
+        self.panel.config_changed.connect(self._sync_chrome_background)
 
         self.engine.start()
-        self._apply_background()
+        self._sync_chrome_background()
         self._load_quote()
 
         # Mouse tracking
@@ -48,10 +47,10 @@ class MainWindow(QMainWindow):
         self.central.setMouseTracking(True)
         self.clock.setMouseTracking(True)
 
-    def _apply_background(self):
-        self.setStyleSheet(
-            f"background-color: {self.sm.get('background_color')};"
-        )
+    def _sync_chrome_background(self):
+        bg = self.sm.get("background_color")
+        self.central.setStyleSheet(f"#centralArea {{ background-color: {bg}; }}")
+        self.setStyleSheet(f"QMainWindow {{ background-color: {bg}; }}")
 
     def _load_quote(self):
         try:
@@ -71,9 +70,9 @@ class MainWindow(QMainWindow):
 
     def mouseMoveEvent(self, event):
         x = event.position().x()
-        if x < 60:
+        if x < 76:
             self.panel.slide_in()
-        elif x > PANEL_WIDTH + 20:
+        elif x > PANEL_WIDTH + 36:
             self.panel.slide_out()
         super().mouseMoveEvent(event)
 
