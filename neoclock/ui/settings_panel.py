@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QSlider, QComboBox, QFrame, QPushButton,
+    QSlider, QComboBox, QFrame, QPushButton, QGraphicsDropShadowEffect,
 )
 from PySide6.QtCore import Qt, Signal, QPropertyAnimation, QEasingCurve, QRect
 from PySide6.QtGui import QColor, QPainter, QBrush, QPen
@@ -79,6 +79,15 @@ class SettingsPanel(QWidget):
         self._anim.setDuration(280)
         self._anim.setEasingCurve(QEasingCurve.OutCubic)
 
+        self.setObjectName("settingsPanelRoot")
+        self.setAttribute(Qt.WA_StyledBackground, True)
+
+        self._shadow = QGraphicsDropShadowEffect(self)
+        self._shadow.setBlurRadius(36)
+        self._shadow.setOffset(12, 0)
+        self._shadow.setColor(QColor(0, 0, 0, 88))
+        self.setGraphicsEffect(self._shadow)
+
         self._build_ui()
         self._apply_style()
 
@@ -115,23 +124,46 @@ class SettingsPanel(QWidget):
         bg = self.sm.get("background_color")
         c = QColor(bg)
         h, s, v, _ = c.getHsvF()
-        v2 = max(0.0, v - 0.08) if v > 0.5 else min(1.0, v + 0.1)
-        panel_bg = QColor.fromHsvF(h, min(s + 0.02, 1.0), v2).name()
+        # Superfície mais clara/escura que o relógio para parecer um cartão sobreposto
+        if v > 0.52:
+            v_panel = max(0.03, v - 0.15)
+        else:
+            v_panel = min(0.96, v + 0.17)
+        panel_bg = QColor.fromHsvF(h, min(s + 0.04, 1.0), v_panel).name()
         text = self.sm.get("text_color")
         font = self.sm.get("font")
 
+        if c.lightness() < 135:
+            edge = "rgba(255,255,255,0.2)"
+            edge_soft = "rgba(255,255,255,0.09)"
+            edge_left = "rgba(0,0,0,0.45)"
+            sh = QColor(0, 0, 0, 105)
+        else:
+            edge = "rgba(0,0,0,0.13)"
+            edge_soft = "rgba(0,0,0,0.06)"
+            edge_left = "rgba(0,0,0,0.07)"
+            sh = QColor(0, 0, 0, 38)
+
+        self._shadow.setColor(sh)
+
         self.setStyleSheet(f"""
-            QWidget {{
+            #settingsPanelRoot {{
                 background-color: {panel_bg};
                 color: {text};
                 font-family: '{font}';
                 font-size: 12px;
                 border: none;
+                border-left: 1px solid {edge_left};
+                border-top: 1px solid {edge_soft};
+                border-bottom: 1px solid {edge_soft};
+                border-right: 2px solid {edge};
+                border-top-right-radius: 16px;
+                border-bottom-right-radius: 16px;
             }}
             QComboBox {{
-                background-color: rgba(128,128,128,0.1);
+                background-color: rgba(128,128,128,0.12);
                 color: {text};
-                border: 1px solid rgba(128,128,128,0.22);
+                border: 1px solid rgba(128,128,128,0.28);
                 border-radius: 10px;
                 padding: 10px 12px;
                 min-height: 22px;
@@ -139,21 +171,21 @@ class SettingsPanel(QWidget):
                 font-family: '{font}';
             }}
             QComboBox:hover {{
-                border: 1px solid rgba(128,128,128,0.38);
-                background-color: rgba(128,128,128,0.14);
+                border: 1px solid rgba(128,128,128,0.42);
+                background-color: rgba(128,128,128,0.16);
             }}
             QComboBox::drop-down {{ border: none; width: 22px; }}
             QComboBox QAbstractItemView {{
                 background-color: {panel_bg};
                 color: {text};
-                selection-background-color: rgba(128,128,128,0.18);
-                border: 1px solid rgba(128,128,128,0.22);
+                selection-background-color: rgba(128,128,128,0.22);
+                border: 1px solid rgba(128,128,128,0.28);
                 padding: 6px;
                 outline: none;
             }}
             QSlider::groove:horizontal {{
                 height: 4px;
-                background: rgba(128,128,128,0.16);
+                background: rgba(128,128,128,0.2);
                 border-radius: 2px;
             }}
             QSlider::handle:horizontal {{
@@ -168,20 +200,20 @@ class SettingsPanel(QWidget):
                 opacity: 0.65;
             }}
             QPushButton {{
-                background-color: rgba(128,128,128,0.1);
+                background-color: rgba(128,128,128,0.12);
                 color: {text};
-                border: 1px solid rgba(128,128,128,0.22);
+                border: 1px solid rgba(128,128,128,0.28);
                 border-radius: 10px;
                 padding: 9px 0;
                 font-size: 12px;
                 font-family: '{font}';
             }}
             QPushButton:hover {{
-                background-color: rgba(128,128,128,0.18);
+                background-color: rgba(128,128,128,0.2);
             }}
             QPushButton[active="true"] {{
-                background-color: rgba(128,128,128,0.22);
-                border: 1px solid rgba(128,128,128,0.45);
+                background-color: rgba(128,128,128,0.24);
+                border: 1px solid rgba(128,128,128,0.5);
             }}
         """)
 
