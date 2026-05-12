@@ -5,7 +5,22 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal, QPropertyAnimation, QEasingCurve, QRect, QSize
 from PySide6.QtGui import QColor, QPainter, QBrush, QPen, QConicalGradient
 
-FONTS = ["Consolas", "Arial", "Courier New", "Segoe UI", "Verdana"]
+FONTS = [
+    "Consolas",
+    "Cascadia Mono",
+    "Cascadia Code",
+    "Segoe UI Mono",
+    "Lucida Console",
+    "Courier New",
+    "Arial",
+    "Segoe UI",
+    "Calibri",
+    "Verdana",
+    "Tahoma",
+    "Georgia",
+    "Times New Roman",
+    "Impact",
+]
 PANEL_WIDTH = 200
 
 

@@ -17,6 +17,30 @@
             "label": "Forest",
             "background_color": "#0a1a0f",
             "text_color": "#a8d5b5"
+        },
+        {
+            "id": "midnight",
+            "label": "Midnight",
+            "background_color": "#0a1628",
+            "text_color": "#8ec5ff"
+        },
+        {
+            "id": "ember",
+            "label": "Ember",
+            "background_color": "#1a0f0a",
+            "text_color": "#ffb38a"
+        },
+        {
+            "id": "slate",
+            "label": "Slate",
+            "background_color": "#121820",
+            "text_color": "#c8d4e0"
+        },
+        {
+            "id": "aurora",
+            "label": "Aurora",
+            "background_color": "#0d1f1c",
+            "text_color": "#7fffd4"
         }
     ],
     "light": [
@@ -37,6 +61,30 @@
             "label": "Sand",
             "background_color": "#fef3e8",
             "text_color": "#3a2a10"
+        },
+        {
+            "id": "mint",
+            "label": "Mint",
+            "background_color": "#e8f5ef",
+            "text_color": "#1a3d2e"
+        },
+        {
+            "id": "lavender",
+            "label": "Lavender",
+            "background_color": "#f0ebf8",
+            "text_color": "#3d2a5c"
+        },
+        {
+            "id": "cream",
+            "label": "Cream",
+            "background_color": "#faf6f0",
+            "text_color": "#3a3530"
+        },
+        {
+            "id": "rose",
+            "label": "Rose",
+            "background_color": "#fceef2",
+            "text_color": "#4a1a2e"
         }
     ]
 }
