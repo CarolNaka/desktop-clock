@@ -16,6 +16,12 @@ DEFAULTS = {
     "quote_date": "",
     "quote_text": "",
     "active_preset": "void",
+    "audio_lofi_on": False,
+    "audio_rain": "off",
+    "audio_hourly_on": False,
+    "audio_lofi_volume": 0.75,
+    "audio_rain_volume": 0.75,
+    "audio_hourly_volume": 0.75,
 }
 
 def _preset_ids(presets: dict) -> set:

@@ -7,6 +7,7 @@ MONTHS = ["January", "February", "March", "April", "May", "June",
 
 class ClockEngine(QObject):
     tick = Signal(str, str)  # (formatted_time, formatted_date)
+    full_hour = Signal()
 
     def __init__(self, settings_manager):
         super().__init__()
@@ -26,6 +27,8 @@ class ClockEngine(QObject):
         time = now.strftime(self._time_format())
         date = self._format_date(now)
         self.tick.emit(time, date)
+        if now.minute == 0 and now.second == 0:
+            self.full_hour.emit()
 
     def _time_format(self) -> str:
         is_12h = self.sm.get("format") == "12h"

@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QSlider, QComboBox, QFrame, QPushButton, QGraphicsDropShadowEffect,
+    QScrollArea, QSizePolicy,
 )
 from PySide6.QtCore import Qt, Signal, QPropertyAnimation, QEasingCurve, QRect
 from PySide6.QtGui import QColor, QPainter, QBrush, QPen
@@ -22,7 +23,7 @@ FONTS = [
     "Impact",
 ]
 
-PANEL_WIDTH = 268
+PANEL_WIDTH = 296
 
 
 class ColorDot(QWidget):
@@ -68,9 +69,10 @@ class ColorDot(QWidget):
 class SettingsPanel(QWidget):
     config_changed = Signal()
 
-    def __init__(self, settings_manager, parent=None):
+    def __init__(self, settings_manager, parent=None, on_audio_touch=None):
         super().__init__(parent)
         self.sm = settings_manager
+        self._touch_audio = on_audio_touch if on_audio_touch else (lambda: None)
         self.setFixedWidth(PANEL_WIDTH)
         self._visible = False
         self._preset_dots = {}
@@ -92,33 +94,131 @@ class SettingsPanel(QWidget):
         self._apply_style()
 
     def _build_ui(self):
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(22, 28, 22, 28)
+        self._audio_vol_labels = []
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(0)
+
+        self._scroll = QScrollArea()
+        self._scroll.setObjectName("settingsScroll")
+        self._scroll.setWidgetResizable(True)
+        self._scroll.setFrameShape(QFrame.Shape.NoFrame)
+        self._scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self._scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self._scroll.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding
+        )
+
+        inner = QWidget()
+        inner.setObjectName("settingsScrollInner")
+        inner.setStyleSheet("background: transparent;")
+        layout = QVBoxLayout(inner)
+        layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(0)
 
+        gap = 16
+
         layout.addWidget(self._section("THEME"))
-        layout.addSpacing(12)
+        layout.addSpacing(10)
         layout.addWidget(self._preset_block())
-        layout.addSpacing(22)
+        layout.addSpacing(gap)
         layout.addWidget(self._divider())
-        layout.addSpacing(22)
+        layout.addSpacing(gap)
 
         layout.addWidget(self._section("FONT"))
-        layout.addSpacing(12)
+        layout.addSpacing(10)
         layout.addWidget(self._font_dropdown())
-        layout.addSpacing(14)
+        layout.addSpacing(12)
         layout.addWidget(self._size_slider())
-        layout.addSpacing(22)
+        layout.addSpacing(gap)
         layout.addWidget(self._divider())
-        layout.addSpacing(22)
+        layout.addSpacing(gap)
 
         layout.addWidget(self._section("FORMAT"))
-        layout.addSpacing(12)
+        layout.addSpacing(10)
         layout.addWidget(self._seconds_toggle())
-        layout.addSpacing(12)
+        layout.addSpacing(10)
         layout.addWidget(self._format_buttons())
 
-        layout.addStretch()
+        layout.addSpacing(gap)
+        layout.addWidget(self._divider())
+        layout.addSpacing(gap)
+
+        layout.addWidget(self._section("BACKGROUND"))
+        layout.addSpacing(10)
+        layout.addWidget(self._lofi_toggle())
+        layout.addSpacing(8)
+        layout.addWidget(self._audio_volume_slider("audio_lofi_volume"))
+        layout.addSpacing(gap)
+        layout.addWidget(self._divider())
+        layout.addSpacing(gap)
+
+        layout.addWidget(self._section("AMBIENCE"))
+        layout.addSpacing(10)
+        layout.addWidget(self._rain_combo())
+        layout.addSpacing(8)
+        layout.addWidget(self._audio_volume_slider("audio_rain_volume"))
+        layout.addSpacing(gap)
+        layout.addWidget(self._divider())
+        layout.addSpacing(gap)
+
+        layout.addWidget(self._section("HOURLY"))
+        layout.addSpacing(10)
+        layout.addWidget(self._hourly_chime_toggle())
+        layout.addSpacing(8)
+        layout.addWidget(self._audio_volume_slider("audio_hourly_volume"))
+
+        layout.addSpacing(12)
+
+        self._scroll.setWidget(inner)
+        outer.addWidget(self._scroll)
+
+    def _audio_volume_slider(self, settings_key: str) -> QWidget:
+        container = QWidget()
+        container.setStyleSheet("background: transparent;")
+        lay = QVBoxLayout(container)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(4)
+
+        row = QHBoxLayout()
+        lbl = QLabel("Volume")
+        lbl.setStyleSheet(
+            "font-size: 11px; color: rgba(128,128,128,0.58); background: transparent;"
+        )
+        val = QLabel()
+        val.setStyleSheet(
+            f"font-size: 11px; font-weight: 600; color: {self.sm.get('text_color')};"
+            " background: transparent;"
+        )
+        self._audio_vol_labels.append(val)
+
+        def fmt(v: int) -> None:
+            val.setText(f"{v}%")
+
+        slider = QSlider(Qt.Horizontal)
+        slider.setRange(0, 100)
+        try:
+            cur = float(self.sm.get(settings_key, 0.75))
+        except (TypeError, ValueError):
+            cur = 0.75
+        slider.setValue(int(round(max(0.0, min(1.0, cur)) * 100)))
+
+        def on_move(v: int) -> None:
+            self._touch_audio()
+            fmt(v)
+            self.sm.set(settings_key, v / 100.0)
+            self.config_changed.emit()
+
+        slider.valueChanged.connect(on_move)
+        fmt(slider.value())
+
+        row.addWidget(lbl)
+        row.addStretch()
+        row.addWidget(val)
+        lay.addLayout(row)
+        lay.addWidget(slider)
+        return container
 
     def _apply_style(self):
         bg = self.sm.get("background_color")
@@ -215,7 +315,32 @@ class SettingsPanel(QWidget):
                 background-color: rgba(128,128,128,0.24);
                 border: 1px solid rgba(128,128,128,0.5);
             }}
+            QScrollArea#settingsScroll {{
+                background: transparent;
+                border: none;
+            }}
+            QScrollBar:vertical {{
+                width: 8px;
+                background: rgba(128,128,128,0.1);
+                border-radius: 4px;
+                margin: 4px 2px 4px 0;
+            }}
+            QScrollBar::handle:vertical {{
+                background: rgba(128,128,128,0.38);
+                border-radius: 4px;
+                min-height: 28px;
+            }}
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
+                height: 0px;
+                width: 0px;
+            }}
         """)
+
+        tc = self.sm.get("text_color")
+        for lbl in self._audio_vol_labels:
+            lbl.setStyleSheet(
+                f"font-size: 11px; font-weight: 600; color: {tc}; background: transparent;"
+            )
 
         self._update_preset_dots()
 
@@ -402,6 +527,84 @@ class SettingsPanel(QWidget):
             self._fmt_btns[fmt] = btn
             row.addWidget(btn)
 
+        return container
+
+    def _lofi_toggle(self):
+        container = QWidget()
+        container.setStyleSheet("background: transparent;")
+        row = QHBoxLayout(container)
+        row.setContentsMargins(0, 0, 0, 0)
+        row.setSpacing(12)
+
+        lbl = QLabel("Lo-fi")
+        lbl.setStyleSheet("font-size: 12px; background: transparent;")
+
+        toggle = QPushButton()
+        toggle.setFixedSize(40, 22)
+        toggle.setCheckable(True)
+        toggle.setChecked(self.sm.get("audio_lofi_on"))
+        toggle.setStyleSheet(self._toggle_style(self.sm.get("audio_lofi_on")))
+
+        def on_toggle(checked):
+            self._touch_audio()
+            toggle.setStyleSheet(self._toggle_style(checked))
+            self.sm.set("audio_lofi_on", checked)
+            self._apply_style()
+            self.config_changed.emit()
+
+        toggle.toggled.connect(on_toggle)
+        row.addWidget(lbl)
+        row.addStretch()
+        row.addWidget(toggle)
+        return container
+
+    def _rain_combo(self):
+        combo = QComboBox()
+        combo.addItem("Off", "off")
+        combo.addItem("Rain 1", "rain01")
+        combo.addItem("Rain 2", "rain02")
+        combo.blockSignals(True)
+        idx = combo.findData(self.sm.get("audio_rain"))
+        combo.setCurrentIndex(idx if idx >= 0 else 0)
+        combo.blockSignals(False)
+
+        def on_change(_i):
+            self._touch_audio()
+            mode = combo.currentData()
+            self.sm.set("audio_rain", mode)
+            self._apply_style()
+            self.config_changed.emit()
+
+        combo.currentIndexChanged.connect(on_change)
+        return combo
+
+    def _hourly_chime_toggle(self):
+        container = QWidget()
+        container.setStyleSheet("background: transparent;")
+        row = QHBoxLayout(container)
+        row.setContentsMargins(0, 0, 0, 0)
+        row.setSpacing(12)
+
+        lbl = QLabel("Hourly chime")
+        lbl.setStyleSheet("font-size: 12px; background: transparent;")
+
+        toggle = QPushButton()
+        toggle.setFixedSize(40, 22)
+        toggle.setCheckable(True)
+        toggle.setChecked(self.sm.get("audio_hourly_on"))
+        toggle.setStyleSheet(self._toggle_style(self.sm.get("audio_hourly_on")))
+
+        def on_toggle(checked):
+            self._touch_audio()
+            toggle.setStyleSheet(self._toggle_style(checked))
+            self.sm.set("audio_hourly_on", checked)
+            self._apply_style()
+            self.config_changed.emit()
+
+        toggle.toggled.connect(on_toggle)
+        row.addWidget(lbl)
+        row.addStretch()
+        row.addWidget(toggle)
         return container
 
     def slide_in(self):

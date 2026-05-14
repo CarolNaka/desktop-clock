@@ -1,72 +1,158 @@
 # MyClock — relógio de desktop personalizável
 
-Um relógio para Windows pensado para ficar presente sem chamar atenção demais.  
-A ideia é simples: transformar momentos de pausa do computador em algo mais limpo, agradável e visualmente calmo — com uma hora fácil de ler, uma data elegante e uma pequena frase que muda diariamente.
+Um relógio para Windows pensado para ficar presente sem chamar atenção demais.
+A ideia é simples: transformar momentos de pausa do computador em algo mais limpo, agradável e visualmente calmo — com uma hora fácil de ler, uma data elegante, uma pequena frase diária e agora também uma experiência sonora ambiente.
 
-O projeto foi desenvolvido com foco em três coisas:
+O projeto foi desenvolvido com foco em quatro pilares:
 
-- visual minimalista;
-- personalização rápida;
-- código organizado o suficiente para continuar evoluindo sem virar caos.
+* visual minimalista;
+* personalização rápida;
+* ambientação visual e sonora;
+* código organizado o suficiente para continuar evoluindo sem virar caos.
 
 ---
 
-## A ideia por trás do projeto
+# A ideia por trás do projeto
 
 Muitas vezes eu queria deixar o computador “parado” sem abrir navegador, player ou alguma interface cheia de elementos. Só um relógio grande, bonito e confortável de olhar à distância.
 
-O MyClock começou exatamente assim: primeiro como uma janela simples mostrando a hora, depois ganhando temas, ajustes de fonte, persistência de configurações e, mais tarde, a geração automática de citações diárias via API.
+O MyClock começou exatamente assim: primeiro como uma janela simples mostrando a hora, depois ganhando temas, ajustes de fonte, persistência de configurações e, mais tarde, geração automática de citações diárias via API.
 
-Hoje ele funciona quase como uma pequena “tela ambiente” para o desktop — discreta, configurável e leve.
+Com o tempo, o projeto evoluiu para uma pequena experiência ambiente para desktop: um relógio discreto, configurável, com temas suaves, efeitos visuais animados e sons ambientes opcionais.
+
+Hoje ele funciona quase como uma “tela de descanso minimalista” para o computador.
 
 ---
 
-## O que já está funcionando
+# O que já está funcionando
 
-### Experiência geral
+## Experiência geral
 
 A interface principal mantém tudo centralizado e fácil de ler:
 
-- **hora** em destaque;
-- **data** em formato longo;
-- **uma citação curta** exibida logo abaixo.
+* **hora** em destaque;
+* **data** em formato longo;
+* **uma citação curta** exibida logo abaixo.
 
 Os tamanhos seguem uma hierarquia proporcional para manter a composição equilibrada visualmente.
 
-O painel de configurações também foi pensado para não poluir a tela: ele aparece apenas quando o cursor se aproxima da borda esquerda da janela e desaparece automaticamente quando não está sendo usado.  
-A intenção era deixar o relógio “respirar”, sem parecer um aplicativo cheio de menus o tempo inteiro.
+O painel de configurações foi pensado para não poluir a tela: ele aparece apenas quando o cursor se aproxima da borda esquerda da janela e desaparece automaticamente quando não está sendo usado.
+
+Além disso:
+
+* o menu agora possui scroll interno automático;
+* funciona melhor em telas menores;
+* evita cortes de interface;
+* mantém todas as configurações acessíveis mesmo com muitos recursos ativos.
 
 ---
 
-### Relógio e atualização de tempo
+# Relógio e atualização de tempo
 
-O sistema de tempo roda através de um `ClockEngine`, usando `QTimer` em modo preciso para atualizar o relógio a cada segundo.
+O sistema de tempo roda através de um `ClockEngine`, utilizando `QTimer` em modo preciso para atualizar o relógio a cada segundo.
 
 Atualmente ele suporta:
 
-- formato **24h ou 12h**;
-- opção de **mostrar ou ocultar segundos**;
-- atualização contínua da data.
+* formato **24h ou 12h**;
+* opção de **mostrar ou ocultar segundos**;
+* atualização contínua da data;
+* notificação sonora em hora cheia.
 
 A data utiliza listas próprias de dias e meses para manter consistência visual independentemente do locale do Windows.
 
 ---
 
-### Aparência e personalização
+# Sistema de áudio ambiente
+
+O projeto agora possui um sistema de áudio ambiente integrado.
+
+## Música de fundo
+
+Atualmente existe suporte para:
+
+* lo-fi ambiente em loop;
+* controle independente de reprodução;
+* controle de volume integrado diretamente no menu;
+* persistência automática das preferências;
+* fade in/fade out suaves.
+
+A reprodução respeita políticas de autoplay do sistema e só inicia após interação do usuário.
+
+---
+
+## Sons ambientes
+
+Além da música de fundo, o projeto também suporta efeitos sonoros ambientes independentes.
+
+Atualmente:
+
+* chuva leve (`rain-01`);
+* chuva intensa (`rain-02`).
+
+Os sons ambientes:
+
+* funcionam em loop;
+* possuem volume independente;
+* podem ser utilizados junto do lo-fi;
+* permitem apenas um ambiente ativo por vez.
+
+---
+
+## Notificação horária
+
+O sistema também suporta um toque suave em cada hora cheia utilizando:
+
+* `ring-01.mp3`
+
+O recurso pode ser ativado ou desativado nas configurações e possui volume independente.
+
+---
+
+# Aparência e personalização
 
 Os temas são definidos em JSON (`assets/themes/presets.json`) e separados entre modos claros e escuros.
 
 Cada preset possui:
 
-- identificador interno;
-- nome exibido no tooltip;
-- cor de fundo;
-- cor principal do texto.
+* identificador interno;
+* nome exibido no tooltip;
+* cor de fundo;
+* cor principal do texto.
 
 Além dos presets prontos, existe também o modo **custom**, onde o usuário pode escolher livremente a cor de fundo usando o seletor do Qt.
 
-A parte tipográfica também é totalmente ajustável: fonte e tamanho podem ser alterados diretamente pelo painel lateral.  
+---
+
+## Background animado
+
+Os temas agora suportam uma camada visual inspirada em ambientação oceânica minimalista.
+
+O efeito inclui:
+
+* textura animada;
+* ondas suaves;
+* movimentação contínua;
+* integração com os temas claros e escuros.
+
+A intenção é criar uma sensação mais relaxante sem transformar o relógio em uma interface visualmente pesada.
+
+---
+
+## Tipografia
+
+A parte tipográfica também é totalmente ajustável:
+
+* fonte;
+* tamanho;
+* proporção visual.
+
+Tudo pode ser alterado diretamente pelo painel lateral.
+
 A seleção inclui fontes comuns no Windows, tanto monoespaçadas quanto sans-serif, buscando manter boa legibilidade em diferentes tamanhos de janela.
+
+---
+
+# Persistência de configurações
 
 Todas as preferências são salvas automaticamente em:
 
@@ -74,57 +160,71 @@ Todas as preferências são salvas automaticamente em:
 neoclock/data/settings.json
 ```
 
-Assim, ao abrir o aplicativo novamente, tudo volta exatamente como estava.
+Incluindo:
+
+* tema selecionado;
+* fonte;
+* tamanho;
+* música ambiente;
+* som de chuva;
+* volumes;
+* notificações;
+* preferências visuais.
+
+Ao abrir o aplicativo novamente, tudo retorna exatamente ao estado anterior.
 
 ---
 
-### Citação diária
+# Citação diária
 
-O `QuoteEngine` integra a API da **Groq** para gerar uma pequena citação reflexiva por dia.
+O `QuoteEngine` integra a API da Groq para gerar uma pequena citação reflexiva por dia.
 
 As frases podem vir em português ou inglês e ficam armazenadas localmente para evitar chamadas repetidas durante o mesmo dia. Isso mantém a experiência consistente e reduz uso desnecessário da API.
 
 Caso a requisição falhe, o aplicativo utiliza uma mensagem de fallback amigável em vez de interromper a interface.
 
-Para ativar essa funcionalidade, basta definir a variável:
+Para ativar essa funcionalidade:
 
 ```env
 GROQ_API_KEY=sua_chave_aqui
 ```
 
-Ela pode ser carregada via `.env` usando `python-dotenv`.
+A variável pode ser carregada via `.env` utilizando `python-dotenv`.
 
 ---
 
-## Estrutura do projeto
+# Estrutura do projeto
 
-| Camada | Responsabilidade |
-|--------|--------|
-| `main.py` | Inicializa o `QApplication` e cria a janela principal. |
-| `core/settings_manager.py` | Gerencia presets, defaults e persistência do `settings.json`. |
-| `core/clock_engine.py` | Atualização e formatação de hora/data. |
-| `core/quote_engine.py` | Geração e cache da citação diária via Groq. |
-| `ui/main_window.py` | Organização da janela, painel lateral, eventos de mouse e integração geral. |
-| `ui/clock_widget.py` | Renderização dos textos e aplicação dinâmica de estilos. |
-| `ui/settings_panel.py` | Controles de tema, fonte, tamanho e animações do painel. |
+| Camada                     | Responsabilidade                                                 |
+| -------------------------- | ---------------------------------------------------------------- |
+| `main.py`                  | Inicializa o `QApplication` e cria a janela principal.           |
+| `core/settings_manager.py` | Gerencia presets, defaults e persistência do `settings.json`.    |
+| `core/clock_engine.py`     | Atualização e formatação de hora/data.                           |
+| `core/quote_engine.py`     | Geração e cache da citação diária via Groq.                      |
+| `core/audio_manager.py`    | Gerenciamento centralizado de músicas, ambientes e notificações. |
+| `ui/main_window.py`        | Organização da janela, painel lateral e integração geral.        |
+| `ui/clock_widget.py`       | Renderização dos textos e aplicação dinâmica de estilos.         |
+| `ui/settings_panel.py`     | Controles de tema, áudio, volumes e animações do painel.         |
 
-De forma geral, o fluxo do app funciona assim:
+Fluxo principal:
 
 ```txt
 ClockEngine → atualiza horário
 SettingsPanel → altera configurações
-MainWindow → reaplica estilos e sincroniza interface
+AudioManager → controla reprodução sonora
+MainWindow → sincroniza interface e estilos
 ```
 
 ---
 
-## Como executar
+# Como executar
 
-### Requisitos
+## Requisitos
 
-- Python 3
-- PySide6
-- dependências utilizadas pelo projeto
+* Python 3
+* PySide6
+* Groq SDK
+* python-dotenv
 
 Dentro da pasta `neoclock`:
 
@@ -137,32 +237,52 @@ pip install PySide6 groq python-dotenv
 python main.py
 ```
 
-Depois, crie um arquivo `.env` na raiz do projeto:
+Depois, crie um arquivo `.env` na raiz:
 
 ```env
 GROQ_API_KEY=sua_chave_aqui
 ```
 
-Sem uma chave válida, o sistema de citações pode usar o fallback local dependendo da resposta da API.
+Sem uma chave válida, o sistema de citações pode utilizar mensagens locais de fallback.
 
 ---
 
-## Estrutura de pastas
+# Estrutura de pastas
 
 ```txt
 neoclock/
   main.py
-  core/           # lógica principal e persistência
-  ui/             # interface e componentes visuais
-  assets/themes/  # presets.json
-  data/           # settings.json gerado em runtime
+
+  core/
+    clock_engine.py
+    quote_engine.py
+    settings_manager.py
+    audio_manager.py
+
+  ui/
+    main_window.py
+    clock_widget.py
+    settings_panel.py
+
+  assets/
+    themes/
+      presets.json
+
+    audio/
+      lo-fi-01.mp3
+      rain-01.mp3
+      rain-02.mp3
+      ring-01.mp3
+
+  data/
+    settings.json
 ```
 
 ---
 
-## Personalização rápida
+# Personalização rápida
 
-### Adicionar novos temas
+## Adicionar novos temas
 
 Edite:
 
@@ -170,7 +290,7 @@ Edite:
 neoclock/assets/themes/presets.json
 ```
 
-E adicione novos objetos em `dark` ou `light` contendo:
+E adicione novos objetos em `dark` ou `light`:
 
 ```json
 {
@@ -183,9 +303,9 @@ E adicione novos objetos em `dark` ou `light` contendo:
 
 ---
 
-### Adicionar novas fontes
+## Adicionar novas fontes
 
-Basta incluir a família tipográfica na lista `FONTS` em:
+Inclua a família tipográfica na lista `FONTS` em:
 
 ```txt
 neoclock/ui/settings_panel.py
@@ -195,7 +315,29 @@ O nome precisa corresponder a uma fonte instalada no sistema.
 
 ---
 
-## Licença
+## Adicionar novos sons
+
+Adicione novos arquivos em:
+
+```txt
+neoclock/assets/audio/
+```
+
+Depois registre os novos sons no `AudioManager` e no painel de configurações.
+
+---
+
+# Objetivo do projeto
+
+O MyClock não pretende competir com aplicações completas de produtividade ou players de música.
+
+A ideia é mais simples:
+
+criar uma presença visual confortável no desktop — algo leve, silencioso, agradável e personalizável o suficiente para permanecer aberto durante longos períodos sem cansar visualmente.
+
+---
+
+# Licença
 
 O projeto segue os termos definidos no arquivo `LICENSE`.
 
@@ -203,4 +345,4 @@ Integrações externas, como a API da Groq, continuam sujeitas aos limites e pol
 
 ---
 
-*README atualizado de acordo com o estado atual do projeto. Conforme novas funcionalidades forem adicionadas, essa documentação pode evoluir junto com a aplicação.*
+*README atualizado de acordo com o estado atual do projeto. Conforme novas funcionalidades forem adicionadas, essa documentação continuará evoluindo junto com a aplicação.*
